@@ -1,0 +1,71 @@
+﻿
+@using fr.Models
+@using fr.MyData
+@using System.ComponentModel.DataAnnotations
+@rendermode InteractiveServer
+
+@page "/login"
+@inject MyApplicationState AppState
+@inject NavigationManager NavigationManager
+
+
+
+<EditForm FormName="AuthorizationForm" Model="@login" OnValidSubmit="@LoginUser" class="d-flex justify-content-center align-content-center m-auto">
+    <DataAnnotationsValidator />
+    <div class="d-flex flex-column col-lg-5 col-md-8 col-sm-12">
+        <h3>Вход</h3>
+        <span class="text-danger">@errorMessage</span>
+        <div class="form-group">
+            <label for="Email">Почта</label>
+            <InputText id="Email" class="form-control" @bind-Value="@login.Email" />
+            <ValidationMessage For="@(() => login.Email)" />
+        </div>
+
+        <div class="form-group">
+            <label for="Password">Пароль</label>
+            <InputText id="Password" class="form-control d-flex justify-content-end" type="@GetPasswordType()" @bind-Value="@login.Password"/>
+            <button @onclick="TogglePasswordVisibility" type="button" class="bi @GetEyeImage() float-start"></button>
+            <ValidationMessage For="@(() => login.Password)" />
+        </div>
+        <button type="submit" class="btn btn-primary my-2">Вход</button>
+        <button type="button" class="btn btn-primary my-2">Регистрация</button>
+    </div>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    private Login login { get; set; }
+    private bool showPassword = false;
+    private string? errorMessage;
+    protected override void OnInitialized() => login ??= new();
+
+    private void LoginUser()
+    {
+        errorMessage = "";
+        User? user = login.Authorization();
+        if (user == null)
+        {
+            errorMessage = "Пользователя не существует. Проверьте введенные данные.";
+            return;
+        }
+        AppState.SetCurrentUser(user);
+        NavigationManager.NavigateTo($"/userAccount");
+
+    }
+
+    // Метод для переключения видимости пароля
+    private void TogglePasswordVisibility()
+    {
+        showPassword = !showPassword;
+
+    }
+
+    private string GetPasswordType()
+    {
+        return showPassword ? "text" : "password";
+    }
+    private string GetEyeImage()
+    {
+        return showPassword ? "bi-eye-slash" : "bi-eye";
+    }
+}

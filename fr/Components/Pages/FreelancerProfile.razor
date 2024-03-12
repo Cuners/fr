@@ -1,0 +1,43 @@
+﻿@page "/profile"
+@rendermode InteractiveServer
+
+<h3>Профиль</h3>
+<div class="container">
+    <div class="col-sm-12 col-md-6 col-lg-4 p-2 float-end container">
+        <div class="container">
+            <h4>Статистика фрилансера</h4>
+        </div>
+        <div class="container">
+            <p class="text-primary">Вполненных заказов: 25</p>
+        </div>
+        <div class="container">
+            <p class="text-primary">Зарегестрирован с: 05.02.2024</p>
+        </div>
+        <div class="container">
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-4 p-2 float-end container">
+        <div class="container py-1 px-2">
+            <input class="form-control" type="text" placeholder="Имя1" aria-label="default input example">
+        </div>
+        <div class=" container d-flex py-1 px-2">
+            <input class="form-control" type="text" placeholder="Имя" aria-label="default input example">
+        </div>
+        <div class="container d-flex my-2">
+            <select class="form-select" aria-label="Категории">
+                <option selected>Все категории</option>
+                <option value="1">Программирование</option>
+                <option value="2">Веб-дизайн</option>
+                <option value="3">Копирайтинг</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12">
+        <img class="w-100" src="/images/pngegg.png" />
+    </div>
+</div>
+
+
+@code {
+
+}

@@ -1,0 +1,90 @@
+﻿@using fr.Models
+@using fr.MyData
+@using System.ComponentModel.DataAnnotations
+@rendermode InteractiveServer
+
+@page "/registration"
+@inject NavigationManager NavigationManager
+
+<EditForm FormName="RegistrationForm" Model="@reg" OnValidSubmit="@RegistrationUser" class="d-flex justify-content-center align-content-center m-auto">
+    <DataAnnotationsValidator />
+    <div class="d-flex flex-column col-lg-5 col-md-8 col-sm-12">
+        <h3>Регистрация</h3>
+        <span class="text-danger">@errorMessage</span>
+        <div class="form-group">
+            <label for="Name"Имя</label>
+            <InputText id="Name" class="form-control" @bind-Value="@reg.Name" />
+            <ValidationMessage For="@(() => reg.Name)" />
+        </div>
+        <div class="form-group">
+            <label for="Email">Почта</label>
+            <InputText id="Email" class="form-control" @bind-Value="@reg.Email" />
+            <ValidationMessage For="@(() => reg.Email)" />
+        </div>
+        <div class="form-group">
+            <label for="DateOfBirth">Дата рождения</label>
+            <InputDate id="Date" class="form-control d-flex justify-content-end" @bind-Value="@reg.DateOfBirth" />
+            <ValidationMessage For="@(() => reg.DateOfBirth)" />
+        </div>
+        <div class="form-group">
+            <label for="Password">Пароль</label>
+            <InputText id="Password" class="form-control d-flex justify-content-end" type="@GetPasswordType()" @bind-Value="@reg.Password" />
+            <ValidationMessage For="@(() => reg.Password)" />
+        </div>
+        <div class="form-group">
+            <label for="Password">Повторите пароль</label>
+            <InputText id="replyPassword" class="form-control d-flex justify-content-end" @bind-Value="@replyPassword" type="@GetPasswordType()" />
+            <button @onclick="TogglePasswordVisibility" type="button" class="bi @GetEyeImage() float-start"></button>
+            <span class="text-danger">@passwordMessage</span>
+        </div>
+        <button type="submit" class="btn btn-primary my-2">Регистрация</button>
+    </div>
+</EditForm>
+
+
+@code {
+    [SupplyParameterFromForm]
+    private Reg reg { get; set; } = new Reg
+        {
+            DateOfBirth = DateOnly.FromDateTime(DateTime.Now)
+        };
+    private bool showPassword = false;
+    private string? errorMessage;
+    private string passwordMessage;
+    private string replyPassword;
+
+
+    private void RegistrationUser()
+    {
+        if(reg.Password != replyPassword)
+        {
+            passwordMessage = "Пароли не совпадают";
+            return;
+        }
+        using(var dbContext = new FreelaceContext())
+        {
+            dbContext.Users.Add(new User{
+                Name = reg.Name,
+                Email = reg.Email,
+                Password = reg.Password,
+                BirthDay = reg.DateOfBirth,
+                RegistrationDate = DateOnly.FromDateTime(DateTime.Now),
+            });
+            dbContext.SaveChanges();
+        }
+    }
+    private void TogglePasswordVisibility()
+    {
+        showPassword = !showPassword;
+
+    }
+
+    private string GetPasswordType()
+    {
+        return showPassword ? "text" : "password";
+    }
+    private string GetEyeImage()
+    {
+        return showPassword ? "bi-eye-slash" : "bi-eye";
+    }
+}
