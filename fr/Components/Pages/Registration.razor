@@ -73,6 +73,7 @@
             dbContext.SaveChanges();
         }
     }
+//Для взаимодействия с БД лучше использовать асинхронные методы, чтобы не блокировать работоспособность приложения
     private void TogglePasswordVisibility()
     {
         showPassword = !showPassword;
